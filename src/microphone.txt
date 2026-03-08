@@ -1,0 +1,58 @@
+#include <driver/i2s.h>
+#include <Arduino.h>
+// 根据你的电路板设计修改引脚定义
+#define I2S_WS   25
+#define I2S_SD   33
+#define I2S_SCK  32
+#define I2S_PORT I2S_NUM_0
+
+// 采样缓冲区
+#define bufferLen 64
+int32_t sBuffer[bufferLen];
+
+void setup() {
+  Serial.begin(115200);
+
+  // 1. I2S 配置
+  const i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
+    .sample_rate = 44100,                               // 采样率
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,       // 常用数字麦克风输出格式
+    .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,        // 单声道（根据 L/R 引脚接法决定）
+    .communication_format = I2S_COMM_FORMAT_STAND_I2S,
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = 8,
+    .dma_buf_len = 64,
+    .use_apll = false
+  };
+
+  // 2. 将配置应用到你设计的引脚
+  const i2s_pin_config_t pin_config = {
+    .bck_io_num = I2S_SCK,    // 32
+    .ws_io_num = I2S_WS,      // 25
+    .data_out_num = -1,       // 不使用输出
+    .data_in_num = I2S_SD     // 33
+  };
+
+  // 3. 安装驱动并启动
+  i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
+  i2s_set_pin(I2S_PORT, &pin_config);
+  i2s_start(I2S_PORT);
+
+  Serial.println("I2S Microphone Initialized on Pins 25, 33, 32");
+}
+
+void loop() {
+  size_t bytesIn = 0;
+  // 从 I2S 读取数据
+  esp_err_t result = i2s_read(I2S_PORT, &sBuffer, sizeof(sBuffer), &bytesIn, portMAX_DELAY);
+
+  if (result == ESP_OK) {
+    int samplesRead = bytesIn / 4;
+    for (int i = 0; i < samplesRead; i++) {
+      // 可以在串口绘图仪（Serial Plotter）查看波形
+      // 提示：数字麦克风通常有直流偏移，可能需要简单的软件高通滤波
+      Serial.println(sBuffer[i]);
+    }
+  }
+}
