@@ -3,7 +3,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
-//#include <Adafruit_AGS02MA.h>
+#include <AGS02MA.h>
 #include <Wire.h>
 #include <WiFi.h>
 
@@ -22,7 +22,7 @@ float temperature;
 int light1_adc_value;
 int light2_adc_value;
 int pir_value;
-uint32_t tvoc;
+uint32_t ags02_value;
 sensors_event_t a, g, temp;
 
 int myFunction(int, int);
@@ -31,7 +31,7 @@ void displaySensorData();
 Adafruit_SSD1306 display = Adafruit_SSD1306(128, 64, &Wire);
 Adafruit_MPU6050 mpu;
 DHT dht(DHT_DATA_PIN,DHT11);
-//Adafruit_AGS02MA ags;
+AGS02MA AGS(26, &Wire1);
 
 void setup() {
   // put your setup code here, to run once:
@@ -40,29 +40,38 @@ void setup() {
   pinMode(LIGHT1_ADC_PIN, INPUT);
   pinMode(LIGHT2_ADC_PIN, INPUT);
   pinMode(PIR_DATA_PIN, INPUT);
-  //if (! ags.begin(&Wire1, 0x1A)) {
-  //if (! ags.begin(&Wire1, 0x1A)) { // or use Wire1 instead!
-    //Serial.println("Couldn't find AGS20MA sensor, check your wiring and pullup resistors!");
-    //while (1) yield();
+  
+  //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  //Serial.print("Connecting to WiFi");
+  //while (WiFi.status() != WL_CONNECTED) {
+    //delay(500);
+    //Serial.print(".");
   //}
+  bool b = AGS.begin();
+  Serial.print("BEGIN:\t");
+  Serial.println(b);
 
-  //if (ags.getFirmwareVersion() == 0) {
-    //Serial.println(F("Could not read firmware, I2C communications issue?"));
-    //while (1) yield();
-  //} 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+  //  pre-heating improves measurement quality
+  //  can be skipped
+  Serial.println("\nWarming up (120 seconds = 24 dots)");
+  while (AGS.isHeated() == false)
+  {
+    delay(5000);
     Serial.print(".");
   }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Firmware version: 0x");
-  //Serial.println(ags.getFirmwareVersion(), HEX);
-  //ags.printSensorDetails();
+  Serial.println();
+
+  b = AGS.setUGM3Mode();
+  uint8_t m = AGS.getMode();
+  Serial.print("MODE:\t");
+  Serial.print(b);
+  Serial.print("\t");
+  Serial.println(m);
+
+  uint8_t version = AGS.getSensorVersion();
+  Serial.print("VERS:\t");
+  Serial.println(version);
+
   dht.begin();
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
     Serial.println(F("SSD1306 allocation failed"));
@@ -87,16 +96,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  ags02_value = AGS.readUGM3();
   humidity = dht.readHumidity();
-  //tvoc = ags.getTVOC();
   temperature = dht.readTemperature();
   light1_adc_value = analogRead(LIGHT1_ADC_PIN);
   light2_adc_value = analogRead(LIGHT2_ADC_PIN);
   pir_value = digitalRead(PIR_DATA_PIN);
   mpu.getEvent(&a, &g, &temp);
-  Serial.println("Hello, World!");
-  //displaySensorData();
-  delay(100);
+  displaySensorData();
+  delay(3000);
 }
 
 // put function definitions here:
@@ -125,7 +133,7 @@ void displaySensorData() {
   display.print("T:");display.print(temperature);display.println("");
   display.print("Light:");display.print(light1_adc_value);display.print(" ");display.print(light2_adc_value);display.println("");
   display.print("PIR:");display.print(pir_value);display.println("");
-  display.print("TVOC:");display.print(tvoc);display.println("");
-  display.print("IP:");display.print(WiFi.localIP());display.println("");
+  display.print("TVOC:");display.print(ags02_value);display.println("");
+  //display.print("IP:");display.print(WiFi.localIP());display.println("");
   display.display();
 }
