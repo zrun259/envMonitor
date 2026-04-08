@@ -33,7 +33,6 @@ public:
     bool isInit;                    //传感器是否初始化完成
 public:
     Sensor(DataTable_t* dataTable,int interval);
-    virtual ~Sensor();
     virtual void init() = 0;
     void start();
     void stop();

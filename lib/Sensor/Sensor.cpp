@@ -8,10 +8,6 @@ Sensor::Sensor(DataTable_t* dataTable,int interval) : sensorTicker(std::bind(&Se
     this->isInit = false;
 }
 
-Sensor::~Sensor() {
-    stop();
-}
-
 void Sensor::start() {
     this->sensorTicker.start();
 }
