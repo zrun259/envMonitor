@@ -11,6 +11,9 @@ public:
     AgsSensor(DataTable_t* dataTable, uint8_t address, TwoWire* wire, int interval = 1000);
     void init() override;
     void readData() override;
+    static void warmupCallback(AgsSensor* instance) {
+        if (instance) instance->checkWarmup();
+    }
 
 private:
     void checkWarmup();

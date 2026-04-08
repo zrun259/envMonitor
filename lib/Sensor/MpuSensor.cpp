@@ -9,8 +9,14 @@ void MpuSensor::init() {
         this->isInit = false;
         return;
     }
-
+    // 增加调试信息
     this->isInit = mpu.begin(this->address, this->wire);
+    if (this->isInit) {
+        Serial.println("MPU6050 Init Success!");
+    } else {
+        Serial.print("MPU6050 Init Failed at address 0x");
+        Serial.println(this->address, HEX);
+    }
 }
 
 void MpuSensor::readData() {

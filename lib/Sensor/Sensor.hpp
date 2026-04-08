@@ -5,19 +5,19 @@
 #include <Ticker.h>
 
 typedef struct MpuData {
-    double ax;
-    double ay;
-    double az;
-    double gx;
-    double gy;
-    double gz;
+    double ax = 0.0f;
+    double ay = 0.0f;
+    double az = 0.0f;
+    double gx = 0.0f;
+    double gy = 0.0f;
+    double gz = 0.0f;
 } MpuData;
 
 typedef struct DataTable_t {
     time_t time;
     MpuData mpu6050;
-    float temperature;
-    float humidity;
+    float temperature = 0.0f;
+    float humidity = 0.0f;
     int light1_adc_value;
     int light2_adc_value;
     bool pir;
@@ -37,5 +37,8 @@ public:
     void start();
     void stop();
     virtual void readData() = 0;
+    static void timerCallback(Sensor* instance) {
+        if (instance) instance->readData();
+    }
 };
 #endif

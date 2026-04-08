@@ -2,16 +2,17 @@
 
 DataTable_t* Sensor::dataTable = nullptr;
 
-Sensor::Sensor(DataTable_t* dataTable,int interval) : sensorTicker(std::bind(&Sensor::readData, this), interval * 1000, 0, MILLIS) {
-    this->dataTable = dataTable;
+Sensor::Sensor(DataTable_t* dataTable,int interval){
+    Sensor::dataTable = dataTable;
     this->interval = interval;
     this->isInit = false;
 }
 
 void Sensor::start() {
-    this->sensorTicker.start();
+    // 显式传入静态函数指针和 this 参数
+    this->sensorTicker.attach_ms(this->interval, Sensor::timerCallback, this);
 }
 
 void Sensor::stop() {
-    this->sensorTicker.stop();
+    this->sensorTicker.detach();
 }
