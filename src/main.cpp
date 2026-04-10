@@ -60,11 +60,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  mpu.update();
   display.clearDisplay();
   display.setCursor(0, 0); 
-  display.print("H:");display.print(datas.humidity);display.println("");
-  display.print("acc_x:");display.print(datas.mpu6050.ax);display.println("");
+  display.print("Humd:");display.print(datas.humidity);display.print(" Temp:");display.print(datas.temperature);display.println("");
+  display.print("Acc:");display.print(datas.mpu6050.ax);display.print(" ");display.print(datas.mpu6050.ay);display.print(" ");display.print(datas.mpu6050.az);display.println("");
+  display.print("Gyr:");display.print(datas.mpu6050.gx);display.print(" ");display.print(datas.mpu6050.gy);display.print(" ");display.print(datas.mpu6050.gz);display.println("");
+  display.print("Light:");display.print(datas.light1_adc_value);display.print(" ");display.print(datas.light2_adc_value);display.println("");
+  display.print("UGM3:");display.print(datas.ags02_value);display.println("");
+  display.print("Pir:");display.print(datas.pir);display.println("");
   display.display();
   delay(50);
 }

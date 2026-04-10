@@ -56,3 +56,11 @@ void loop() {
     }
   }
 }
+
+
+display.clearDisplay();
+  display.setCursor(0, 0); 
+  display.printf("Hudmidy:%f Temp:%f",datas.humidity,datas.temperature);display.println("");
+  display.printf("Acc x:%f | y:%f | z:%f",datas.mpu6050.ax,datas.mpu6050.ay,datas.mpu6050.az);display.println("");
+  display.printf("Ags02:%d",datas.ags02_value);display.println("");
+  display.printf("Light L:%d | R:%d",datas.light1_adc_value,datas.light2_adc_value); 
