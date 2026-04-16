@@ -16,8 +16,8 @@ typedef struct MpuData {
 typedef struct DataTable_t {
     time_t time;
     MpuData mpu6050;
-    float temperature = 0.0f;
-    float humidity = 0.0f;
+    float temperature;
+    float humidity;
     int light1_adc_value;
     int light2_adc_value;
     bool pir;
@@ -27,16 +27,16 @@ typedef struct DataTable_t {
 
 class Sensor {
 public:
-    int interval;                   //传感器采样间隔
-    static DataTable_t* dataTable;  //所有传感器类将采集的数据存储在同一个DataTable_t结构体中，方便后续处理和上传
-    Ticker sensorTicker;            //传感器采样定时器
-    bool isInit;                    //传感器是否初始化完成
+    int interval;                   //采样间隔
+    static DataTable_t* dataTable;  //所有传感器类将采集的数据存储在同一数据表中
+    Ticker sensorTicker;            //采样定时器
+    bool isInit;                    //是否初始化完成标志
 public:
-    Sensor(DataTable_t* dataTable,int interval);
-    virtual void init() = 0;
-    void start();
-    void stop();
-    virtual void readData() = 0;
+    Sensor(DataTable_t* dataTable,int interval);    //构造函数，传入数据表指针和采样间隔
+    virtual void init() = 0;                        //纯虚函数，子类必须实现初始化方法
+    void start();                                   //启动采样定时器
+    void stop();                                    //停止采样定时器        
+    virtual void readData() = 0;                    //纯虚函数，子类必须实现读取数据方法    
     static void timerCallback(Sensor* instance) {
         if (instance) instance->readData();
     }
