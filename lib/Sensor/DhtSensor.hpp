@@ -7,7 +7,7 @@
 
 class DhtSensor : public Sensor {
 public:
-    DhtSensor(DataTable_t* dataTable, uint8_t pin, uint8_t type, int interval = 1000);
+    DhtSensor(DataTable_t* dataTable, uint8_t pin, uint8_t type, int interval = 4000);
     void init() override;
     void readData() override;
 

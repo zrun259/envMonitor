@@ -9,7 +9,6 @@ Sensor::Sensor(DataTable_t* dataTable,int interval){
 }
 
 void Sensor::start() {
-    // 显式传入静态函数指针和 this 参数
     this->sensorTicker.attach_ms(this->interval, Sensor::timerCallback, this);
 }
 

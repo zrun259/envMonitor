@@ -60,7 +60,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   screen.update();
-  delay(50);
+  delay(16);
 }
 
 void IRAM_ATTR handleButtonPress() {
