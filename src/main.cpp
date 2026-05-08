@@ -10,6 +10,7 @@
 #include "AgsSensor.hpp"
 #include "SoundSensor.hpp"
 #include "display.hpp"
+#include "client.hpp"
 
 #define BUTTON_PIN        2
 
@@ -19,8 +20,9 @@
 #define PIR_PIN           35
 #define SOFT_I2C_SDA      17
 #define SOFT_I2C_SCL      16
-#define WIFI_SSID         "Mi3000T_2.4G"
-#define WIFI_PASSWORD     "123mi123"
+#define WIFI_SSID         "MiRUN"
+#define WIFI_PASSWORD     "123zr123"
+#define SERVER_URL        "ws://10.158.184.47:8080"
 
 DataTable_t         datas;
 
@@ -33,6 +35,7 @@ SoundSensor         sound(&datas,1000);
 
 Adafruit_SSD1306    display(128, 64, &Wire);
 Display             screen(&display, &datas);
+InfoClient          client(WIFI_SSID, WIFI_PASSWORD, SERVER_URL,&datas,5000);
 
 void updateUI();
 void IRAM_ATTR handleButtonPress();
@@ -41,6 +44,9 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   Wire1.begin(SOFT_I2C_SDA, SOFT_I2C_SCL,400000);
+  client.init();
+  delay(500); // 确保 WiFi 和 WebSocket 连接稳定后再继续初始化传感器和显示屏
+  client.start();
   {
     dht.init();
     light.init();
@@ -64,6 +70,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   screen.update();
+  client.loop();
   delay(16);
 }
 

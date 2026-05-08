@@ -49,6 +49,13 @@ void drawMainPage(int offsetX) {
     _screen->drawLine(offsetX, 10, offsetX + 127, 10, SSD1306_WHITE);
     _screen->setCursor(offsetX + 2, 0);
     _screen->printf("HOME");
+    
+    // ===== Wifi 连接标志 ====
+    if (_dt->isConnectedToWifi) {
+        _screen->fillCircle(offsetX + 60, 4, 3, SSD1306_WHITE);
+    } else {
+        _screen->drawCircle(offsetX + 60, 4, 3, SSD1306_WHITE);
+    }
 
     // ===== PIR 呼吸灯 =====
     static uint8_t breath = 0;

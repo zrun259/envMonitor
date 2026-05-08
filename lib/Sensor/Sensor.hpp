@@ -15,6 +15,8 @@ typedef struct MpuData {
 
 typedef struct DataTable_t {
     time_t time;
+    bool isConnectedToWifi;
+    bool isWebSocketConnected;
     MpuData mpu6050;
     float temperature;
     float humidity;
