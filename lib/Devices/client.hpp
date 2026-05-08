@@ -1,5 +1,5 @@
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef INFO_CLIENT_HPP
+#define INFO_CLIENT_HPP
 
 #include <WiFi.h>
 #include <HTTPClient.h>
@@ -7,14 +7,14 @@
 #include "Sensor.hpp"
 #include <string.h>
 
-class Client {
+class InfoClient {
 public:
     char ssid[32];
     char password[64];
     char SERVER_URL[128];
     DataTable_t* dataTable;
 public:
-    Client(char* ssid, char* password, char* server_url);
+    InfoClient(char* ssid, char* password, char* server_url);
     void connect(const char* ssid, const char* password);
     void disconnect();
     bool isConnected() const;

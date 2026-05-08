@@ -1,7 +1,7 @@
 #include "client.hpp"
 
 
-Client::Client(char* ssid, char* password, char* server_url) {
+InfoClient::InfoClient(char* ssid, char* password, char* server_url) {
     strncpy(this->ssid, ssid, sizeof(this->ssid) - 1);
     this->ssid[sizeof(this->ssid) - 1] = '\0';
 
@@ -12,22 +12,22 @@ Client::Client(char* ssid, char* password, char* server_url) {
     this->SERVER_URL[sizeof(this->SERVER_URL) - 1] = '\0';
 }
 
-void Client::connect(const char* ssid, const char* password) {
+void InfoClient::connect(const char* ssid, const char* password) {
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
 }
 
-void Client::disconnect() {
+void InfoClient::disconnect() {
     WiFi.disconnect();
 }
 
-bool Client::isConnected() const {
+bool InfoClient::isConnected() const {
     return WiFi.status() == WL_CONNECTED;
 }
 
-void Client::sendData(DataTable_t* dataTable) {
+void InfoClient::sendData(DataTable_t* dataTable) {
     if (dataTable == nullptr) {
         return;
     }
