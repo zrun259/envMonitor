@@ -94,6 +94,7 @@ void InfoClient::disconnectWifi() {
 }
 
 bool InfoClient::isWifiConnected() const {
+    this->dataTable->isConnectedToWifi = (WiFi.status() == WL_CONNECTED);
     return WiFi.status() == WL_CONNECTED;
 }
 
@@ -138,6 +139,9 @@ void InfoClient::disconnectWebSocket() {
 }
 
 void InfoClient::loop() {
+    if (!this->isWifiConnected()){
+        return;
+    }
     this->webSocket.loop();
     if (this->needSend) {
         this->needSend = false;
