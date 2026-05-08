@@ -139,9 +139,6 @@ void InfoClient::disconnectWebSocket() {
 }
 
 void InfoClient::loop() {
-    if (!this->isWifiConnected()){
-        return;
-    }
     this->webSocket.loop();
     if (this->needSend) {
         this->needSend = false;
@@ -152,7 +149,9 @@ void InfoClient::loop() {
 void InfoClient::sendDataViaWS() {
     if (!this->dataTable) return;
     if (!this->isWebSocketConnected) return;
-
+    if (!this->isWifiConnected()){
+        return;
+    }
     JsonDocument doc;
     time_t now;
     time(&now);

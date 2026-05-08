@@ -24,6 +24,8 @@
 #define WIFI_PASSWORD     "123zr123"
 #define SERVER_URL        "ws://10.158.184.47:8080"
 
+bool useBtnToEnbSendToServer = false;
+
 DataTable_t         datas;
 
 DhtSensor           dht(&datas,18,DHT11,4000);
