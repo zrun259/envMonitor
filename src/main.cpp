@@ -8,6 +8,7 @@
 #include "LightSensor.hpp"
 #include "DhtSensor.hpp"
 #include "AgsSensor.hpp"
+#include "SoundSensor.hpp"
 #include "display.hpp"
 
 #define BUTTON_PIN        2
@@ -28,6 +29,7 @@ LightSensor         light(&datas,LIGHT_PIN_1,LIGHT_PIN_2,1000);
 PirSensor           pir(&datas,35,500);
 AgsSensor           ags(&datas,0x1A,&Wire1,4000);
 MpuSensor           mpu(&datas,&Wire1,0x68,100);
+SoundSensor         sound(&datas,1000);
 
 Adafruit_SSD1306    display(128, 64, &Wire);
 Display             screen(&display, &datas);
@@ -50,6 +52,8 @@ void setup() {
     pir.start();
     ags.init();
     ags.start();
+    sound.init();
+    sound.start();
     screen.begin();
   }
   pinMode(BUTTON_PIN, INPUT_PULLUP);

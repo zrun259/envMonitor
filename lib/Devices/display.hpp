@@ -76,18 +76,25 @@ void drawMainPage(int offsetX) {
     _screen->printf("%.1f%%", _dt->humidity);
 
     // ===== 光照进度条 =====
-    int bar = map(4095 - (_dt->light1_adc_value+_dt->light2_adc_value)/2, 0, 4095, 0, 100);
-    _screen->drawRect(offsetX + 0, 40, 100, 8, SSD1306_WHITE);
+    int bar = map(4095 - (_dt->light1_adc_value+_dt->light2_adc_value)/2, 0, 4095, 0, 60);
+    _screen->drawRect(offsetX + 0, 40, 60, 8, SSD1306_WHITE);
     _screen->fillRect(offsetX + 0, 40, bar, 8, SSD1306_WHITE);
 
+    // ===== 音量卡片 =====
+    _screen->drawRect(offsetX + 68, 40, 60, 20, SSD1306_WHITE);
+    _screen->setCursor(offsetX + 72, 42);
+    _screen->printf("VOL");
+    _screen->setCursor(offsetX + 72, 50);
+    _screen->printf("%.1fdB", _dt->volume);
+
     // ===== 底部状态 =====
-    _screen->drawLine(offsetX, 54, offsetX + 127, 54, SSD1306_WHITE);
+    _screen->drawLine(offsetX, 54, offsetX + 52, 54, SSD1306_WHITE);
 
     _screen->setCursor(offsetX + 0, 56);
     _screen->printf("G:%d", _dt->ags02_value);
 
-    _screen->setCursor(offsetX + 70, 56);
-    _screen->printf(_dt->pir ? "ACTIVE" : "IDLE");
+    //_screen->setCursor(offsetX + 10, 56);
+    //_screen->printf(_dt->pir ? "ACTIVE" : "IDLE");
 }
 
     // 绘制 MPU6050 详情页
